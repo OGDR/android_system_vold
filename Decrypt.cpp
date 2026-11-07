@@ -520,7 +520,10 @@ namespace keystore {
 
 		KeystoreInfo keystore_info;
 		bool copied = keystore_info.backupDatabase(src, dst);
-		if (copied) chmod(dst.c_str(), 0600);
+		if (copied) {
+			chown(dst.c_str(), 1000, 1000);
+			chmod(dst.c_str(), 0600);
+		}
 
 		property_set("ctl.start", "keystore2");
 		if (!waitForServiceState("keystore2", "running")) return false;
