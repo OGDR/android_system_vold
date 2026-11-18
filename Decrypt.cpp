@@ -1091,17 +1091,17 @@ extern "C" bool Decrypt_User(const userid_t user_id, const std::string& Password
 		printf("Unknown password type\n");
 		return false;
 	}
-
-	if (Default_Password) {
-		if (!Decrypt_CE_storage(user_id, "!")) {
-			return Decrypt_User_Synth_Pass(user_id, Password);
-		}
-		return true;
-	}
 	if (stat("/data/system_de/0/spblob", &st) == 0) {
 		printf("Using synthetic password method\n");
 		return Decrypt_User_Synth_Pass(user_id, Password);
 	}
+	if (Default_Password) {
+		if (!Decrypt_CE_storage(user_id, "!")) {
+			return false;
+		}
+		return true;
+	}
+	
 	// printf("password filename is '%s'\n", filename.c_str());
 	if (stat(filename.c_str(), &st) != 0) {
 		printf("error stat'ing key file: %s\n", strerror(errno));
